@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\xampp\htdocs\Project_python_master_IRS\.venv
+set VIRTUAL_ENV=C:\Users\Sellier Romain\Documents\Partage\Project_python_master_IRS\.venv
 
 if not defined PROMPT set PROMPT=$P$G
 
