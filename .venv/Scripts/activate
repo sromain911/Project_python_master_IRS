@@ -39,10 +39,10 @@ deactivate nondestructive
 if [ "${OSTYPE:-}" = "cygwin" ] || [ "${OSTYPE:-}" = "msys" ] ; then
     # transform D:\path\to\venv to /d/path/to/venv on MSYS
     # and to /cygdrive/d/path/to/venv on Cygwin
-    export VIRTUAL_ENV=$(cygpath "C:\xampp\htdocs\Project_python_master_IRS\.venv")
+    export VIRTUAL_ENV=$(cygpath "C:\Users\Sellier Romain\Documents\Partage\Project_python_master_IRS\.venv")
 else
     # use the path as-is
-    export VIRTUAL_ENV="C:\xampp\htdocs\Project_python_master_IRS\.venv"
+    export VIRTUAL_ENV="C:\Users\Sellier Romain\Documents\Partage\Project_python_master_IRS\.venv"
 fi
 
 _OLD_VIRTUAL_PATH="$PATH"
