@@ -64,6 +64,16 @@ class CompteBancaire:
 
     def has_carte(self):
         return self.a_carte
+    
+    def get_carte(self):
+        return self.carte_identifiant
+    
+    def get_expdate(self):
+        return self.expiration_date
+    
+    def get_CVV(self):
+        return self.CVV
+    
 
 def creer_comptes_depuis_fichier(nom_fichier):
     comptes = []
@@ -106,6 +116,26 @@ def afficher_liste_comptes(comptes):
 
     tree.pack(expand=True, fill="both")
 
+def afficher_liste_cartes(comptes):
+    # Création d'une nouvelle fenêtre pour afficher la liste des comptes
+    fenetre_liste_cartes = tk.Toplevel()
+    fenetre_liste_cartes.title("Liste des Cartes Bancaires")
+
+    # Création du Treeview pour afficher les cartes
+    tree = ttk.Treeview(fenetre_liste_cartes, columns=("Numero de Carte", "Propriétaire de la carte", "Date d'expiration", "CVV"))
+    tree.heading("#0", text="Numero")
+    tree.heading("Propriétaire de la carte", text="Propriétaire de la carte")
+    tree.heading("Date d'expiration", text="Date d'expiration")
+    tree.heading("CVV", text="CVV")
+
+    # Ajout des données des comptes au Treeview
+    for idx, compte in enumerate(comptes, start=1):
+        if compte.has_carte():
+            tree.insert("", tk.END, text=str(idx), values=(compte.get_carte(), f"{compte.get_user_family_name()} {compte.get_user_name()}", f"{compte.get_expdate()}", f"{compte.CVV}"))
+
+    tree.pack(expand=True, fill="both")
+
+
 def main():
     nom_fichier = r'program\clients.csv'
     comptes_crees = creer_comptes_depuis_fichier(nom_fichier)
@@ -141,6 +171,7 @@ def main():
     # Disposition des boutons en colonne
     bouton_accueil.grid(row=1, column=0, padx=5, pady=5)
     bouton_visualiser_comptes.grid(row=2, column=0, padx=5, pady=5)
+    bouton_visualiser_cartes.grid(row=3, column=0, padx=5, pady=5)
     
     # Centrage des boutons
     fenetre.columnconfigure(0, weight=1)
