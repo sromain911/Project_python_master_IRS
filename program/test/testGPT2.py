@@ -143,7 +143,7 @@ def payer():
     spinbox = tk.Spinbox(fenetre_payer, from_=0, to=100000)
     spinbox.pack(padx=20, pady=20)
     print(a)
-    Button_valider = tk.Button(fenetre_payer, text="Valider", command=lambda: somme=spinbox.get(), a_fermer(fenetre_payer))
+    #Button_valider = tk.Button(fenetre_payer, text="Valider", command=lambda: somme=spinbox.get(), a_fermer(fenetre_payer))
 
 #def fermer_et_ouvir(a_fermer):
 
