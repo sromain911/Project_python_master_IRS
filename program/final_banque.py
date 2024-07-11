@@ -96,110 +96,133 @@ def creer_comptes_depuis_fichier(nom_fichier):
     
     return comptes
 
-def afficher_liste_comptes(comptes):
-    # Création d'une nouvelle fenêtre pour afficher la liste des comptes
-    fenetre_liste_comptes = tk.Toplevel()
-    fenetre_liste_comptes.title("Liste des Comptes Bancaires")
+class InterfaceBanque:
+    def __init__(self, root, comptes):
+        self.root = root
+        self.comptes = comptes
+        self.root.title("Accueil Compte Banque")
 
-    # Création du Treeview pour afficher les comptes
-    tree = ttk.Treeview(fenetre_liste_comptes, columns=("Numéro de Compte", "Propriétaire du Compte", "Solde", "Carte"))
-    tree.heading("#0", text="Numéro")
-    tree.heading("Numéro de Compte", text="Numéro de Compte")
-    tree.heading("Propriétaire du Compte", text="Propriétaire du Compte")
-    tree.heading("Solde", text="Solde")
-    tree.heading("Carte", text="Carte")
+        # Ajout d'un label pour le titre
+        label_titre = tk.Label(self.root, text="Accueil Compte Banque", font=("Arial", 18, "bold"))
+        label_titre.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
 
-    # Ajout des données des comptes au Treeview
-    for idx, compte in enumerate(comptes, start=1):
-        carte_presente = "Oui" if compte.has_carte() else "Non"
-        tree.insert("", tk.END, text=str(idx), values=(compte.get_identifiant(), f"{compte.get_user_family_name()} {compte.get_user_name()}", f"{compte.get_solde()} EUR", carte_presente))
+        # Création des boutons
+        bouton_visualiser_comptes = tk.Button(self.root, text="Visualisation des comptes", command=self.afficher_liste_comptes)
+        bouton_visualiser_cartes = tk.Button(self.root, text="Visualiser des cartes", command=self.afficher_liste_cartes)
+        bouton_payer = tk.Button(self.root, text="Payer", command=self.payer)
+        bouton_quitter = tk.Button(self.root, text="Quitter", command=self.root.destroy)
 
-    tree.pack(expand=True, fill="both")
+        # Disposition des boutons en colonne
+        bouton_visualiser_comptes.grid(row=1, column=0, padx=5, pady=5)
+        bouton_visualiser_cartes.grid(row=2, column=0, padx=5, pady=5)
+        bouton_payer.grid(row=3, column=0, padx=5, pady=5)
+        bouton_quitter.grid(row=4, column=0, padx=5, pady=5)
 
-def afficher_liste_cartes(comptes):
-    # Création d'une nouvelle fenêtre pour afficher la liste des comptes
-    fenetre_liste_cartes = tk.Toplevel()
-    fenetre_liste_cartes.title("Liste des Cartes Bancaires")
+        # Centrage des boutons
+        self.root.columnconfigure(0, weight=1)
 
-    # Création du Treeview pour afficher les cartes
-    tree = ttk.Treeview(fenetre_liste_cartes, columns=("Numero de Carte", "Propriétaire de la carte", "Date d'expiration", "CVV"))
-    tree.heading("#0", text="Numero")
-    tree.heading("Propriétaire de la carte", text="Propriétaire de la carte")
-    tree.heading("Date d'expiration", text="Date d'expiration")
-    tree.heading("CVV", text="CVV")
+    def afficher_liste_comptes(self):
+        fenetre_liste_comptes = tk.Toplevel(self.root)
+        fenetre_liste_comptes.title("Liste des Comptes Bancaires")
 
-    # Ajout des données des comptes au Treeview
-    for idx, compte in enumerate(comptes, start=1):
-        if compte.has_carte():
-            tree.insert("", tk.END, text=str(idx), values=(compte.get_carte(), f"{compte.get_user_family_name()} {compte.get_user_name()}", f"{compte.get_expdate()}", f"{compte.CVV}"))
+        tree = ttk.Treeview(fenetre_liste_comptes, columns=("Numéro de Compte", "Propriétaire du Compte", "Solde", "Carte"))
+        tree.heading("#0", text="Numéro")
+        tree.heading("Numéro de Compte", text="Numéro de Compte")
+        tree.heading("Propriétaire du Compte", text="Propriétaire du Compte")
+        tree.heading("Solde", text="Solde")
+        tree.heading("Carte", text="Carte")
 
-    tree.pack(expand=True, fill="both")
+        for idx, compte in enumerate(self.comptes, start=1):
+            carte_presente = "Oui" if compte.has_carte() else "Non"
+            tree.insert("", tk.END, text=str(idx), values=(compte.get_identifiant(), f"{compte.get_user_family_name()} {compte.get_user_name()}", f"{compte.get_solde()} EUR", carte_presente))
 
-def payer():
-    # Création d'une nouvelle fenêtre pour afficher la liste des comptes
-    fenetre_payer = tk.Toplevel()
-    fenetre_payer.title("Payer")
+        tree.pack(expand=True, fill="both")
 
-    spinbox = tk.Spinbox(fenetre_payer, from_=0, to=100000)
-    spinbox.pack(padx=20, pady=20)
+    def afficher_liste_cartes(self):
+        fenetre_liste_cartes = tk.Toplevel(self.root)
+        fenetre_liste_cartes.title("Liste des Cartes Bancaires")
 
-    def valider_et_fermer():
-        somme = spinbox.get()  # Récupère la valeur du Spinbox
-        print(f"La somme sélectionnée est : {somme}")
-        fenetre_payer.destroy()  # Ferme la fenêtre actuelle
-        nouvelle_fenetre = tk.Tk()  # Ouvre une nouvelle fenêtre
-        nouvelle_fenetre.title("Nouvelle Fenêtre")
-        label = tk.Label(nouvelle_fenetre, text="Ceci est une nouvelle fenêtre.")
-        label.pack()
-        nouvelle_fenetre.mainloop()
+        tree = ttk.Treeview(fenetre_liste_cartes, columns=("Numero de Carte", "Propriétaire de la carte", "Date d'expiration", "CVV"))
+        tree.heading("#0", text="Numero")
+        tree.heading("Propriétaire de la carte", text="Propriétaire de la carte")
+        tree.heading("Date d'expiration", text="Date d'expiration")
+        tree.heading("CVV", text="CVV")
 
-    bouton_valider = tk.Button(fenetre_payer, text="Valider", command=valider_et_fermer)
-    bouton_valider.pack(pady=10)
+        for idx, compte in enumerate(self.comptes, start=1):
+            if compte.has_carte():
+                tree.insert("", tk.END, text=str(idx), values=(compte.get_carte(), f"{compte.get_user_family_name()} {compte.get_user_name()}", f"{compte.get_expdate()}", f"{compte.get_CVV()}"))
+
+        tree.pack(expand=True, fill="both")
+
+    def payer(self):
+        fenetre_payer = tk.Toplevel(self.root)
+        fenetre_payer.title("Payer")
+
+        label_somme = tk.Label(fenetre_payer, text="Somme à payer :")
+        label_somme.pack(padx=20, pady=5)
+        spinbox = tk.Spinbox(fenetre_payer, from_=0, to=100000)
+        spinbox.pack(padx=20, pady=5)
+
+        def valider_et_ouvrir():
+            somme = float(spinbox.get())
+            fenetre_payer.destroy()
+            self.ouvrir_fenetre_paiement(somme)
+
+        bouton_valider = tk.Button(fenetre_payer, text="Valider", command=valider_et_ouvrir)
+        bouton_valider.pack(pady=10)
+
+    def ouvrir_fenetre_paiement(self, somme):
+        fenetre_paiement = tk.Toplevel(self.root)
+        fenetre_paiement.title("Informations de Paiement")
+
+        label_numero_carte = tk.Label(fenetre_paiement, text="Numéro de carte :")
+        label_numero_carte.grid(row=0, column=0, padx=10, pady=5)
+        entry_numero_carte = tk.Entry(fenetre_paiement)
+        entry_numero_carte.grid(row=0, column=1, padx=10, pady=5)
+
+        label_nom_prenom = tk.Label(fenetre_paiement, text="Nom Prénom du titulaire :")
+        label_nom_prenom.grid(row=1, column=0, padx=10, pady=5)
+        entry_nom_prenom = tk.Entry(fenetre_paiement)
+        entry_nom_prenom.grid(row=1, column=1, padx=10, pady=5)
+
+        label_date_expiration = tk.Label(fenetre_paiement, text="Date d'expiration :")
+        label_date_expiration.grid(row=2, column=0, padx=10, pady=5)
+        entry_date_expiration = tk.Entry(fenetre_paiement)
+        entry_date_expiration.grid(row=2, column=1, padx=10, pady=5)
+
+        label_cvv = tk.Label(fenetre_paiement, text="CVV :")
+        label_cvv.grid(row=3, column=0, padx=10, pady=5)
+        entry_cvv = tk.Entry(fenetre_paiement)
+        entry_cvv.grid(row=3, column=1, padx=10, pady=5)
+
+        def valider_paiement():
+            numero_carte = entry_numero_carte.get()
+            nom_prenom = entry_nom_prenom.get()
+            date_expiration = entry_date_expiration.get()
+            cvv = entry_cvv.get()
+
+            for compte in self.comptes:
+                if compte.has_carte() and compte.get_carte() == numero_carte and compte.get_expdate() == date_expiration and compte.get_CVV() == cvv:
+                    if somme <= compte.get_solde():
+                        compte.solde = round(compte.get_solde() - somme, 2)
+                        messagebox.showinfo("Succès", f"Paiement de {somme} EUR réussi pour {nom_prenom}.")
+                        fenetre_paiement.destroy()
+                        return
+                    else:
+                        messagebox.showerror("Erreur", "Solde insuffisant.")
+                        return
+            messagebox.showerror("Erreur", "Informations de carte incorrectes.")
+
+        bouton_valider = tk.Button(fenetre_paiement, text="Valider le paiement", command=valider_paiement)
+        bouton_valider.grid(row=4, column=0, columnspan=2, pady=10)
 
 def main():
     nom_fichier = r'program\clients.csv'
     comptes_crees = creer_comptes_depuis_fichier(nom_fichier)
-    
-    # Affichage des identifiants des comptes créés dans la console
-    for idx, compte in enumerate(comptes_crees, start=1):
-        print(f"Compte {idx}:")
-        print(f"  Nom: {compte.get_user_family_name()}")
-        print(f"  Prénom: {compte.get_user_name()}")
-        print(f"  Identifiant: {compte.get_identifiant()}")
-        print(f"  Solde: {compte.get_solde()} EUR")
-        if compte.has_carte():
-            print(f"  Carte Identifiant: {compte.carte_identifiant}")
-            print(f"  Date d'expiration: {compte.expiration_date}")
-            print(f"  CVV: {compte.CVV}")
-        else:
-            print("  Aucune carte associée.")
-        print()
 
-    # Création de la fenêtre principale
-    fenetre = tk.Tk()
-    fenetre.title("Accueil Compte Banque")
-    
-    # Ajout d'un label pour le titre
-    label_titre = tk.Label(fenetre, text="Accueil Compte Banque", font=("Arial", 18, "bold"))
-    label_titre.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
-    
-    # Création des boutons
-    bouton_accueil = tk.Button(fenetre, text="Accueil", command=fenetre.destroy)
-    bouton_visualiser_comptes = tk.Button(fenetre, text="Visualisation des comptes", command=lambda: afficher_liste_comptes(comptes_crees))
-    bouton_visualiser_cartes = tk.Button(fenetre, text="Visualiser des cartes", command=lambda: afficher_liste_cartes(comptes_crees))
-    bouton_payer = tk.Button(fenetre, text="Payer", command=payer)
-    
-    # Disposition des boutons en colonne
-    bouton_accueil.grid(row=1, column=0, padx=5, pady=5)
-    bouton_visualiser_comptes.grid(row=2, column=0, padx=5, pady=5)
-    bouton_visualiser_cartes.grid(row=3, column=0, padx=5, pady=5)
-    bouton_payer.grid(row=4, column=0, padx=5, pady=5)
-    
-    # Centrage des boutons
-    fenetre.columnconfigure(0, weight=1)
-    
-    # Exécution de l'interface graphique
-    fenetre.mainloop()
+    root = tk.Tk()
+    app = InterfaceBanque(root, comptes_crees)
+    root.mainloop()
 
 if __name__ == "__main__":
     main()
